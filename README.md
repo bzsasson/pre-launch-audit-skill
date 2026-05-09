@@ -98,13 +98,13 @@ All 5 sub-audits run by default. You can skip any by saying so.
 
 A prioritized report with:
 
-- **Top 5 issues** -- the most impactful findings across all sub-audits, with business context
-- **P0 (launch blockers)** -- things that cause deindexation, data breaches, or site breakage
-- **P1 (fix on launch day)** -- meaningful regressions, significant visibility or security gaps
-- **P2 (post-launch)** -- quality improvements, minor gaps
-- **P3 (backlog)** -- nice to have, emerging standards
-- **What's already good** -- things done right
-- **Post-launch monitoring** -- what to set up before launch so you can track performance from day one
+- **Top 5 issues**: the most impactful findings across all sub-audits, with business context
+- **P0 (launch blockers)**: things that cause deindexation, data breaches, or site breakage
+- **P1 (fix on launch day)**: meaningful regressions, significant visibility or security gaps
+- **P2 (post-launch)**: quality improvements, minor gaps
+- **P3 (backlog)**: nice to have, emerging standards
+- **What's already good**: things done right
+- **Post-launch monitoring**: what to set up before launch so you can track performance from day one
 
 Every P0/P1 finding includes what breaks if you don't fix it, the specific fix for your stack (file path, code snippet, or command), and how to verify the fix worked.
 
@@ -130,7 +130,7 @@ skills/pre-launch-audit/
     stack-profiles.md              # 15-stack fingerprints, bash recon, platform ceilings
 ```
 
-The skill loads playbooks and references on demand -- only the files needed for selected sub-audits are read into context.
+The skill loads playbooks and references on demand, only the files needed for selected sub-audits are read into context.
 
 ## Security scope
 
