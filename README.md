@@ -55,18 +55,30 @@ The playbooks reference specific tools (Chrome DevTools for browser checks, Data
 
 ## Installation
 
-Copy the skill into your Claude Code skills directory:
+### Plugin marketplace (recommended)
+
+In Claude Code, run:
+
+```
+/plugin marketplace add bzsasson/pre-launch-audit-skill
+```
+
+This installs the skill automatically using the Claude Code plugin system.
+
+### Manual install
+
+Clone the repo and copy the skill directory:
 
 ```bash
 git clone https://github.com/bzsasson/pre-launch-audit-skill.git
-cp -r pre-launch-audit-skill ~/.claude/skills/pre-launch-audit
+cp -r pre-launch-audit-skill/skills/pre-launch-audit ~/.claude/skills/pre-launch-audit
 ```
 
 Or symlink it if you want to pull updates later:
 
 ```bash
 git clone https://github.com/bzsasson/pre-launch-audit-skill.git
-ln -s "$(pwd)/pre-launch-audit-skill" ~/.claude/skills/pre-launch-audit
+ln -s "$(pwd)/pre-launch-audit-skill/skills/pre-launch-audit" ~/.claude/skills/pre-launch-audit
 ```
 
 After installation, Claude Code will pick up the skill automatically in new conversations.
@@ -99,19 +111,23 @@ Every P0/P1 finding includes what breaks if you don't fix it, the specific fix f
 ## File structure
 
 ```
-SKILL.md                           # Main orchestrator -- controls the audit flow
-audits/
-  technical-seo.md                 # 10 checks
-  ai-accessibility.md              # 7 checks
-  security.md                      # 6 areas
-  performance.md                   # 8 areas
-  on-page.md                       # 9 checks
-references/
-  ai-crawler-landscape.md          # AI bot taxonomy, user-agents, Cloudflare, llms.txt
-  security-checks.md               # Headers, vibe-coding checklist, CVEs, secrets patterns
-  sf-power-workflows.md            # Screaming Frog custom extractions, JS snippets, CLI
-  performance-budgets.md           # CWV thresholds, diagnostic playbooks, caching
-  stack-profiles.md                # 15-stack fingerprints, bash recon, platform ceilings
+.claude-plugin/
+  plugin.json                      # Plugin metadata
+  marketplace.json                 # Marketplace catalog
+skills/pre-launch-audit/
+  SKILL.md                         # Main orchestrator -- controls the audit flow
+  audits/
+    technical-seo.md               # 10 checks
+    ai-accessibility.md            # 7 checks
+    security.md                    # 6 areas
+    performance.md                 # 8 areas
+    on-page.md                     # 9 checks
+  references/
+    ai-crawler-landscape.md        # Bot taxonomy, user-agents, Cloudflare, llms.txt
+    security-checks.md             # Headers, vibe-coding checklist, CVEs, secrets patterns
+    sf-power-workflows.md          # Screaming Frog custom extractions, JS snippets, CLI
+    performance-budgets.md         # CWV thresholds, diagnostic playbooks, caching
+    stack-profiles.md              # 15-stack fingerprints, bash recon, platform ceilings
 ```
 
 The skill loads playbooks and references on demand -- only the files needed for selected sub-audits are read into context.
