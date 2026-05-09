@@ -43,17 +43,15 @@ With more tools available, the audit gets deeper:
 | Tool | What it adds | Required? |
 |---|---|---|
 | bash (curl, dig, openssl, grep) | Headers, DNS, TLS, robots.txt, HTML inspection, secret scanning | Yes (always available) |
-| Screaming Frog MCP | Full site crawl, bulk analysis across all URLs, crawl comparison | No. **Requires [Screaming Frog SEO Spider](https://www.screamingfrog.co.uk/) installed locally** (free for up to 500 URLs, paid license for larger sites). The [SF MCP server](https://github.com/bzsasson/screaming-frog-mcp-server) connects it to Claude Code. |
-| Chrome DevTools | Accessibility tree, Lighthouse scores, performance traces, network waterfall | No. Available via the [DCL-wrapper MCP](https://github.com/anthropics/anthropic-tools) or similar browser MCP. |
-| DataForSEO | Lighthouse API, AI search volume data, technology detection | No. **Requires a [DataForSEO](https://dataforseo.com/) API key** (paid service, usage-based pricing). Connected via DCL-wrapper. |
-| Playwright | Browser snapshots, page interaction | No. Fallback for Chrome DevTools. Available as a Claude Code plugin. |
-| Ahrefs MCP | Backlink metrics, keyword data, competitor analysis | No. Available as a built-in MCP on claude.ai for Ahrefs subscribers. |
+| [Screaming Frog MCP](https://github.com/bzsasson/screaming-frog-mcp) | Full site crawl, bulk analysis across all URLs, crawl comparison | No. Separate project -- an MCP server that connects [Screaming Frog SEO Spider](https://www.screamingfrog.co.uk/) to Claude Code. Requires Screaming Frog installed locally (free for up to 500 URLs, paid license for larger sites). |
+| Playwright | Browser automation, accessibility tree, Lighthouse scores, page interaction | No. Available as a [Claude Code plugin](https://github.com/anthropics/claude-code). The playbooks use it for accessibility audits, performance traces, and rendered-DOM checks. |
+| [DataForSEO](https://dataforseo.com/) | Lighthouse API, AI search volume data, technology detection | No. **Paid service** (usage-based API pricing). Requires an API key and an MCP server that connects it to Claude Code. |
 
-**You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks, and Screaming Frog is the biggest upgrade for technical SEO, Chrome DevTools for performance and accessibility.
+**You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks -- Screaming Frog is the biggest upgrade for technical SEO, Playwright for performance and accessibility.
 
 ### Swapping tools
 
-The playbooks reference specific tools (DataForSEO for Lighthouse data, Ahrefs for backlinks, etc.), but you can adapt them. If you use a different SEO platform, keyword tool, or backlink provider, you can ask Claude to update the playbooks to use your preferred tools instead. The checks themselves are tool-agnostic -- the playbooks just specify which tool calls to make for each check.
+The playbooks reference specific tools (DataForSEO for Lighthouse data, Playwright for browser checks, etc.), but the checks themselves are tool-agnostic. If you use different SEO tools -- Ahrefs instead of DataForSEO, Semrush, or something else entirely -- you can ask Claude to update the playbooks to use your preferred tools. The skill describes *what* to check; the tool calls are just one way to get the data.
 
 ## Installation
 
