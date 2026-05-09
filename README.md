@@ -40,12 +40,12 @@ The skill uses several tools to gather data. It checks which ones are available 
 
 With more tools available, the audit gets deeper:
 
-| Tool | What it adds | Required? |
+| Tool | What it adds | Notes |
 |---|---|---|
-| bash (curl, dig, openssl, grep) | Headers, DNS, TLS, robots.txt, HTML inspection, secret scanning | Yes (always available) |
-| [Screaming Frog MCP](https://github.com/bzsasson/screaming-frog-mcp) | Full site crawl, bulk analysis across all URLs, crawl comparison | No. Requires a [Screaming Frog](https://www.screamingfrog.co.uk/) paid license (the MCP uses the CLI and database features, which aren't available on the free plan). |
-| Chrome DevTools (via MCP) | Accessibility tree, Lighthouse scores, performance traces, network waterfall | No. The playbooks call Chrome DevTools through an MCP server. You can substitute Playwright (available as a [Claude Code plugin](https://github.com/anthropics/claude-code)) or any browser MCP that exposes similar capabilities. |
-| [DataForSEO](https://dataforseo.com/) | Lighthouse API, AI search volume data, technology detection | No. **Paid service** (usage-based API pricing). Requires an API key and an MCP server that connects it to Claude Code. Can be replaced with Ahrefs, Semrush, or other SEO data providers. |
+| bash (curl, dig, openssl, grep) | Headers, DNS, TLS, robots.txt, HTML inspection, secret scanning | Always available. The only tool the skill actually needs. |
+| [Screaming Frog MCP](https://github.com/bzsasson/screaming-frog-mcp) | Full site crawl, bulk analysis across all URLs, crawl comparison | Optional. Requires a [Screaming Frog](https://www.screamingfrog.co.uk/) paid license (the MCP uses the CLI and database features, which aren't on the free plan). |
+| Chrome DevTools (via MCP) | Accessibility tree, Lighthouse scores, performance traces, network waterfall | Optional. The playbooks call Chrome DevTools through an MCP server. You can substitute Playwright (available as a [Claude Code plugin](https://github.com/anthropics/claude-code)) or any browser MCP. |
+| [DataForSEO](https://dataforseo.com/) | Lighthouse API, AI search volume data, technology detection | Optional. Paid API (usage-based pricing). Can be replaced with Ahrefs, Semrush, or other SEO data providers. |
 
 **You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks, and Screaming Frog is the biggest upgrade for technical SEO and performance and accessibility checks.
 
