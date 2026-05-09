@@ -44,14 +44,14 @@ With more tools available, the audit gets deeper:
 |---|---|---|
 | bash (curl, dig, openssl, grep) | Headers, DNS, TLS, robots.txt, HTML inspection, secret scanning | Yes (always available) |
 | [Screaming Frog MCP](https://github.com/bzsasson/screaming-frog-mcp) | Full site crawl, bulk analysis across all URLs, crawl comparison | No. Separate project -- an MCP server that connects [Screaming Frog SEO Spider](https://www.screamingfrog.co.uk/) to Claude Code. Requires Screaming Frog installed locally (free for up to 500 URLs, paid license for larger sites). |
-| Playwright | Browser automation, accessibility tree, Lighthouse scores, page interaction | No. Available as a [Claude Code plugin](https://github.com/anthropics/claude-code). The playbooks use it for accessibility audits, performance traces, and rendered-DOM checks. |
-| [DataForSEO](https://dataforseo.com/) | Lighthouse API, AI search volume data, technology detection | No. **Paid service** (usage-based API pricing). Requires an API key and an MCP server that connects it to Claude Code. |
+| Chrome DevTools (via MCP) | Accessibility tree, Lighthouse scores, performance traces, network waterfall | No. The playbooks call Chrome DevTools through an MCP server. You can substitute Playwright (available as a [Claude Code plugin](https://github.com/anthropics/claude-code)) or any browser MCP that exposes similar capabilities. |
+| [DataForSEO](https://dataforseo.com/) | Lighthouse API, AI search volume data, technology detection | No. **Paid service** (usage-based API pricing). Requires an API key and an MCP server that connects it to Claude Code. Can be replaced with Ahrefs, Semrush, or other SEO data providers. |
 
-**You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks -- Screaming Frog is the biggest upgrade for technical SEO, Playwright for performance and accessibility.
+**You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks -- Screaming Frog is the biggest upgrade for technical SEO, a browser tool for performance and accessibility.
 
 ### Swapping tools
 
-The playbooks reference specific tools (DataForSEO for Lighthouse data, Playwright for browser checks, etc.), but the checks themselves are tool-agnostic. If you use different SEO tools -- Ahrefs instead of DataForSEO, Semrush, or something else entirely -- you can ask Claude to update the playbooks to use your preferred tools. The skill describes *what* to check; the tool calls are just one way to get the data.
+The playbooks reference specific tools (Chrome DevTools for browser checks, DataForSEO for Lighthouse data and keyword metrics), but the checks themselves are tool-agnostic -- they describe *what* to check, and the tool calls are just one way to get the data. If you use different tools, you can ask Claude to update the playbooks to match your setup. Common swaps: Playwright for Chrome DevTools, Ahrefs or Semrush for DataForSEO.
 
 ## Installation
 
