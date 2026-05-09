@@ -70,7 +70,9 @@ Run all probes in parallel before anything else.
 
 ### Tool probing
 
-- **DCL-wrapper:** `call_mcp_tool(mcp_name='dcl-wrapper', tool_name='list_available_mcps', arguments={})` -- check for `dataforseo`, `chrome-devtools`
+Probe for available tools. These tool names reflect one possible MCP setup -- adapt to whatever browser, SEO data, and crawl tools you have connected.
+
+- **Browser MCP:** `call_mcp_tool(mcp_name='dcl-wrapper', tool_name='list_available_mcps', arguments={})` -- check for `dataforseo`, `chrome-devtools`. Alternatively, probe for Playwright: `mcp__plugin_playwright_playwright__browser_snapshot`
 - **SF MCP:** `mcp__screaming-frog__sf_check` -- verify installed + licensed
 - **Playwright/browser:** attempt `mcp__plugin_playwright_playwright__browser_snapshot` or Chrome DevTools snapshot
 
@@ -122,7 +124,7 @@ curl -sL https://example.com | grep -oE 'src="[^"]*\.js"' | head -20
 
 ### DataForSEO supplement
 
-If DataForSEO is available via DCL-wrapper:
+If DataForSEO is available (via any MCP gateway that exposes it):
 ```
 call_mcp_tool(mcp_name='dataforseo', tool_name='domain_analytics_technologies_domain_technologies', arguments={"target": "example.com"})
 ```
