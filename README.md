@@ -20,11 +20,11 @@ If you haven't used Claude Code before: it's Anthropic's coding agent. Skills ar
 
 The skill runs 5 sub-audits. Each one has its own playbook with specific checks, tool calls, and severity classifications:
 
-- **Technical SEO**: can search engines find and index your pages? Checks for indexation blockers, JS rendering issues, broken redirects, canonical problems, sitemap validation, staging URL leaks, and more.
 - **AI Accessibility**: can AI search engines (ChatGPT Search, Perplexity, Google AI Overviews) see and cite your content? Checks crawler access, CDN/WAF blocking (Cloudflare Bot Fight Mode is a common invisible killer), citation readiness, and whether AI browser agents can navigate your site.
-- **Security**: are there exposed secrets, missing headers, or known vulnerabilities? Checks for leaked API keys in JS bundles, missing security headers, framework CVEs, and common vibe-coding issues (Supabase RLS, exposed endpoints, IDOR). This is pre-launch hygiene, not a penetration test.
-- **Performance**: will the site be fast for real users? Checks Core Web Vitals (LCP, INP, CLS), image optimization, caching, render-blocking resources, and third-party script impact.
+- **Technical SEO**: can search engines find and index your pages? Checks for indexation blockers, JS rendering issues, broken redirects, canonical problems, sitemap validation, staging URL leaks, and more.
 - **On-Page SEO**: is the content structured for search visibility? Checks titles, descriptions, heading hierarchy, internal linking, structured data, Open Graph tags, and whether content is formatted for featured snippets and AI citations.
+- **Performance**: will the site be fast for real users? Checks Core Web Vitals (LCP, INP, CLS), image optimization, caching, render-blocking resources, and third-party script impact.
+- **Security**: are there exposed secrets, missing headers, or known vulnerabilities? Checks for leaked API keys in JS bundles, missing security headers, framework CVEs, and common vibe-coding issues (Supabase RLS, exposed endpoints, IDOR). This is pre-launch hygiene, not a penetration test.
 
 ## How it works
 
@@ -47,11 +47,11 @@ With more tools available, the audit gets deeper:
 | Chrome DevTools (via MCP) | Accessibility tree, Lighthouse scores, performance traces, network waterfall | No. The playbooks call Chrome DevTools through an MCP server. You can substitute Playwright (available as a [Claude Code plugin](https://github.com/anthropics/claude-code)) or any browser MCP that exposes similar capabilities. |
 | [DataForSEO](https://dataforseo.com/) | Lighthouse API, AI search volume data, technology detection | No. **Paid service** (usage-based API pricing). Requires an API key and an MCP server that connects it to Claude Code. Can be replaced with Ahrefs, Semrush, or other SEO data providers. |
 
-**You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks -- Screaming Frog is the biggest upgrade for technical SEO, a browser tool for performance and accessibility.
+**You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks, and Screaming Frog is the biggest upgrade for technical SEO and performance and accessibility checks.
 
 ### Swapping tools
 
-The playbooks reference specific tools (Chrome DevTools for browser checks, DataForSEO for Lighthouse data and keyword metrics), but the checks themselves are tool-agnostic -- they describe *what* to check, and the tool calls are just one way to get the data. If you use different tools, you can ask Claude to update the playbooks to match your setup. Common swaps: Playwright for Chrome DevTools, Ahrefs or Semrush for DataForSEO.
+The playbooks reference specific tools (Chrome DevTools for browser checks, DataForSEO for Lighthouse data and keyword metrics), but the checks themselves are tool-agnostic, they describe *what* to check, and the tool calls are just one way to get the data. If you use different tools, you can ask Claude to update the playbooks to match your setup. Common swaps: Playwright for Chrome DevTools, Ahrefs or Semrush for DataForSEO.
 
 ## Installation
 
@@ -90,7 +90,7 @@ The skill triggers when you ask Claude Code to audit a site before launch:
 - "Run a pre-launch audit on https://example.com"
 - "Is this site ready to ship?"
 - "Check my staging site before go-live"
-- "Audit https://example.com and skip performance"
+- "check if we are ready to launch the new site"
 
 All 5 sub-audits run by default. You can skip any by saying so.
 
