@@ -1,81 +1,107 @@
 # Pre-Launch Website Audit
 
-A Claude Code skill that runs a comprehensive pre-launch website audit across 5 domains: technical SEO, AI accessibility, security, performance, and on-page SEO.
+A skill for Claude Code that checks a website before it goes live. It runs 5 sub-audits -- technical SEO, AI accessibility, security, performance, and on-page SEO -- and tells you what to fix before launch, in priority order.
 
-It detects the site's tech stack, tailors checks to the framework, runs sub-audits in parallel where possible, and delivers a prioritized report with stack-specific fix recommendations.
+The idea is simple: a site that launches well is one where all the parts work together. Good performance means nothing if search engines can't crawl the site. Solid SEO means nothing if the site leaks API keys. Clean security headers mean nothing if they break how Googlebot renders the page. The 5 sub-audits aren't independent checklists -- they cross-reference each other, deduplicate findings, and surface shared root causes. One fix in the right place often resolves issues across multiple audits.
+
+This was built for SEOs running pre-launch checks, but it's useful for anyone shipping a website -- whether that's a developer pushing a side project, a team launching a redesign, or an agency reviewing a client's staging site.
+
+## Where it runs
+
+This is a **Claude Code skill**. It works in:
+
+- **Claude Code CLI** (terminal)
+- **Claude Code in VS Code / JetBrains** (IDE extensions)
+- **Claude Code on claude.ai** (web -- claude.ai/code)
+
+If you haven't used Claude Code before: it's Anthropic's coding agent. Skills are instruction files that teach it how to do specific tasks. This skill teaches it how to audit a website.
 
 ## What it covers
 
-- **Technical SEO** -- indexation blockers, JS rendering, crawlability, canonicalization, sitemaps, redirects, structured data, hreflang, staging leak sweeps, pagination
-- **AI Accessibility** -- 4-category crawler access audit, CDN/WAF probing (Cloudflare Bot Fight Mode, etc.), citation readiness, agent usability via a11y tree, discoverability protocols (llms.txt, ai-agent.json)
-- **Security** -- transport/DNS, HTTP security headers, secrets exposure, vibe-coding checks (Supabase RLS, IDOR, exposed endpoints), framework CVEs, supply chain
-- **Performance** -- Core Web Vitals (LCP/INP/CLS), Lighthouse, network waterfall, caching/CDN, image optimization, render-blocking resources, modern primitives (Early Hints, Speculation Rules, bfcache)
-- **On-Page SEO** -- titles, descriptions, heading hierarchy, content quality/E-E-A-T, internal linking, Open Graph/social, URL structure, featured snippet and AI citation patterns, image SEO
+The skill runs 5 sub-audits. Each one has its own playbook with specific checks, tool calls, and severity classifications:
 
-## Stack detection
+- **Technical SEO** -- can search engines find and index your pages? Checks for indexation blockers, JS rendering issues, broken redirects, canonical problems, sitemap validation, staging URL leaks, and more.
+- **AI Accessibility** -- can AI search engines (ChatGPT Search, Perplexity, Google AI Overviews) see and cite your content? Checks crawler access, CDN/WAF blocking (Cloudflare Bot Fight Mode is a common invisible killer), citation readiness, and whether AI browser agents can navigate your site.
+- **Security** -- are there exposed secrets, missing headers, or known vulnerabilities? Checks for leaked API keys in JS bundles, missing security headers, framework CVEs, and common vibe-coding issues (Supabase RLS, exposed endpoints, IDOR). This is pre-launch hygiene, not a penetration test.
+- **Performance** -- will the site be fast for real users? Checks Core Web Vitals (LCP, INP, CLS), image optimization, caching, render-blocking resources, and third-party script impact.
+- **On-Page SEO** -- is the content structured for search visibility? Checks titles, descriptions, heading hierarchy, internal linking, structured data, Open Graph tags, and whether content is formatted for featured snippets and AI citations.
 
-The skill fingerprints the site's framework, hosting, and CDN before running any checks. Supported stacks include Next.js, Nuxt, Astro, SvelteKit, WordPress, Shopify, Webflow, Framer, Wix, Squarespace, Hugo/Jekyll/Eleventy, Drupal, and vibe-coded platforms (Lovable, Bolt, Base44, Replit). Each stack gets tailored checks injected into the relevant sub-audits.
+## How it works
 
-## Tools it uses
+Before running any checks, the skill detects your tech stack -- framework, hosting platform, and CDN -- using HTTP headers, HTML signatures, DNS records, and bundle paths. It then tailors every check to your specific stack.
 
-The skill probes for available tools at startup and degrades gracefully when tools are missing. Every sub-audit has a minimum viable path using just bash.
+Supported stacks include Next.js, Nuxt, Astro, SvelteKit, WordPress, Shopify, Webflow, Framer, Wix, Squarespace, Hugo/Jekyll/Eleventy, Drupal, and AI-generated apps (Lovable, Bolt, Base44, Replit).
 
-| Tool | What it provides |
-|---|---|
-| Screaming Frog MCP | Full site crawl, custom extractions, crawl comparison |
-| Chrome DevTools | Accessibility tree, Lighthouse, performance traces, network waterfall |
-| DataForSEO | Lighthouse API, AI search volume, technology detection |
-| Playwright | Browser snapshots (fallback for DevTools) |
-| Ahrefs MCP | Backlink metrics, keyword data |
-| bash | curl, dig, openssl, grep -- always available |
+For example, a Next.js site on Vercel gets ISR cache validation and `NEXT_PUBLIC_*` env var audits. A WordPress site gets plugin CVE checks and username enumeration detection. A vibe-coded app gets Supabase RLS probing and exposed endpoint sweeps.
+
+## Tools
+
+The skill uses several tools to gather data. It checks which ones are available at startup and works with whatever you have. At minimum, it needs `bash` (curl, dig, openssl, grep) -- every sub-audit has a fallback path that uses just command-line tools.
+
+With more tools available, the audit gets deeper:
+
+| Tool | What it adds | Required? |
+|---|---|---|
+| bash (curl, dig, openssl, grep) | Headers, DNS, TLS, robots.txt, HTML inspection, secret scanning | Yes (always available) |
+| Screaming Frog MCP | Full site crawl, bulk analysis across all URLs, crawl comparison | No. **Requires [Screaming Frog SEO Spider](https://www.screamingfrog.co.uk/) installed locally** (free for up to 500 URLs, paid license for larger sites). The [SF MCP server](https://github.com/bzsasson/screaming-frog-mcp-server) connects it to Claude Code. |
+| Chrome DevTools | Accessibility tree, Lighthouse scores, performance traces, network waterfall | No. Available via the [DCL-wrapper MCP](https://github.com/anthropics/anthropic-tools) or similar browser MCP. |
+| DataForSEO | Lighthouse API, AI search volume data, technology detection | No. **Requires a [DataForSEO](https://dataforseo.com/) API key** (paid service, usage-based pricing). Connected via DCL-wrapper. |
+| Playwright | Browser snapshots, page interaction | No. Fallback for Chrome DevTools. Available as a Claude Code plugin. |
+| Ahrefs MCP | Backlink metrics, keyword data, competitor analysis | No. Available as a built-in MCP on claude.ai for Ahrefs subscribers. |
+
+**You don't need all of these.** The skill works with just bash. Each additional tool unlocks deeper checks -- Screaming Frog is the biggest upgrade for technical SEO, Chrome DevTools for performance and accessibility.
+
+### Swapping tools
+
+The playbooks reference specific tools (DataForSEO for Lighthouse data, Ahrefs for backlinks, etc.), but you can adapt them. If you use a different SEO platform, keyword tool, or backlink provider, you can ask Claude to update the playbooks to use your preferred tools instead. The checks themselves are tool-agnostic -- the playbooks just specify which tool calls to make for each check.
 
 ## Installation
 
 Copy the skill into your Claude Code skills directory:
 
 ```bash
-# Clone the repo
 git clone https://github.com/bzsasson/pre-launch-audit-skill.git
-
-# Copy to your skills directory
 cp -r pre-launch-audit-skill ~/.claude/skills/pre-launch-audit
 ```
 
-Or if you prefer to keep it as a git repo for updates:
+Or symlink it if you want to pull updates later:
 
 ```bash
-ln -s /path/to/pre-launch-audit-skill ~/.claude/skills/pre-launch-audit
+git clone https://github.com/bzsasson/pre-launch-audit-skill.git
+ln -s "$(pwd)/pre-launch-audit-skill" ~/.claude/skills/pre-launch-audit
 ```
+
+After installation, Claude Code will pick up the skill automatically in new conversations.
 
 ## Usage
 
-In Claude Code, the skill triggers when you ask to audit a site before launch:
+The skill triggers when you ask Claude Code to audit a site before launch:
 
 - "Run a pre-launch audit on https://example.com"
 - "Is this site ready to ship?"
 - "Check my staging site before go-live"
-- "Audit https://example.com for technical SEO, security, and performance"
+- "Audit https://example.com -- skip performance"
 
-All 5 sub-audits run by default. You can skip any by telling it which ones to drop.
+All 5 sub-audits run by default. You can skip any by saying so.
 
-## Output
+## What you get
 
-The skill delivers a prioritized report:
+A prioritized report with:
 
-- **Top 5 issues** with business impact and specific fixes
-- **P0 (launch blockers)** -- deindexation, data breach, site breakage
-- **P1 (launch day)** -- meaningful regressions, significant gaps
-- **P2 (post-launch)** -- quality improvements
+- **Top 5 issues** -- the most impactful findings across all sub-audits, with business context
+- **P0 (launch blockers)** -- things that cause deindexation, data breaches, or site breakage
+- **P1 (fix on launch day)** -- meaningful regressions, significant visibility or security gaps
+- **P2 (post-launch)** -- quality improvements, minor gaps
 - **P3 (backlog)** -- nice to have, emerging standards
 - **What's already good** -- things done right
-- **Post-launch monitoring setup** -- what to wire before launch
+- **Post-launch monitoring** -- what to set up before launch so you can track performance from day one
 
-Every P0/P1 finding includes the business impact, a stack-specific fix (exact file path, code snippet, or command), and a verification command.
+Every P0/P1 finding includes what breaks if you don't fix it, the specific fix for your stack (file path, code snippet, or command), and how to verify the fix worked.
 
 ## File structure
 
 ```
-SKILL.md                           # Main skill orchestrator
+SKILL.md                           # Main orchestrator -- controls the audit flow
 audits/
   technical-seo.md                 # 10 checks
   ai-accessibility.md              # 7 checks
@@ -83,18 +109,18 @@ audits/
   performance.md                   # 8 areas
   on-page.md                       # 9 checks
 references/
-  ai-crawler-landscape.md          # Bot taxonomy, user-agents, Cloudflare, llms.txt, GEO
+  ai-crawler-landscape.md          # AI bot taxonomy, user-agents, Cloudflare, llms.txt
   security-checks.md               # Headers, vibe-coding checklist, CVEs, secrets patterns
-  sf-power-workflows.md            # Custom extractions, JS snippets, CLI automation
+  sf-power-workflows.md            # Screaming Frog custom extractions, JS snippets, CLI
   performance-budgets.md           # CWV thresholds, diagnostic playbooks, caching
   stack-profiles.md                # 15-stack fingerprints, bash recon, platform ceilings
 ```
 
-The skill loads playbooks and references on demand -- only the files needed for selected sub-audits are read.
+The skill loads playbooks and references on demand -- only the files needed for selected sub-audits are read into context.
 
 ## Security scope
 
-The security sub-audit covers pre-launch hygiene: headers, secrets exposure, known CVEs, and vibe-coding patterns. It is not a penetration test. No SQLi/XSS fuzzing, no authenticated session abuse, no business-logic exploitation. See `audits/security.md` for the full scope boundary.
+The security sub-audit checks for pre-launch hygiene: exposed secrets, missing headers, known CVEs, and common patterns in AI-generated code. It does not perform penetration testing -- no SQL injection fuzzing, no authenticated session abuse, no business-logic exploitation. See `audits/security.md` for the full scope boundary.
 
 ## License
 
